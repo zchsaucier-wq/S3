@@ -1,7 +1,11 @@
-AWSTemplateFormatVersion: 2019-09-09
-Resorces:
+# Description of what this change includes
+# Revision number
+# Date
+Resources:
   S3Bucket:
-    Type: 'AWS:S3:Bucket'
+    Type: 'AWS::S3::Bucket'
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       PublicAccessBlockConfiguration:
         BlockPublicAcls: false
@@ -11,24 +15,24 @@ Resorces:
       WebsiteConfiguration:
         IndexDocument: index.html
         ErrorDocument: error.html
-    DeletionPolicy: Retain
-    UpdateReplacePolicy: Retain
-BucketPolicy:
-    #Type: 'AWS::S3::BucketPolicy'
+
+  BucketPolicy:
+    Type: 'AWS::S3::BucketPolicy'
     Properties:
+      Bucket: !Ref S3Bucket
       PolicyDocument:
         Id: MyPolicy
-        Version: 2012-10-17
+        Version: '2012-10-17'
         Statement:
           - Sid: PublicReadForGetBucketObjects
             Effect: Allow
             Principal: '*'
             Action: 's3:GetObject'
-            Resource: !Join 
+            Resource: !Join
               - ''
               - - 'arn:aws:s3:::'
                 - !Ref S3Bucket
-                - /*
+                - '/*'
       Bucket: !Ref S3Bucket
 Outputs:
   WebsiteURL:
